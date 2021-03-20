@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:form_validation/src/Models/ProductModel.dart';
 
 class ProductsProvider {
-  final String _url = 'https://flutter.jeancdev.com/api';
+  final String _url = 'https://jc-backend-flutter.herokuapp.com/api';
 
   Future<String> crearProducto(ProductModel producto) async {
     final url = '$_url/create_product';
@@ -20,7 +20,7 @@ class ProductsProvider {
     final url = '$_url/products';
     final resp = await http.get(url, headers: _setHeaders());
     final decodedData = json.decode(resp.body);
-    final List<ProductModel> productos = List();
+    final List<ProductModel> productos = [];
 
     decodedData.forEach((value) {
       // print(value["price"].runtimeType);
