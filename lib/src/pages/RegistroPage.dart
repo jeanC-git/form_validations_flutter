@@ -5,8 +5,9 @@ import 'package:form_validation/src/bloc/LoginBloc.dart';
 import 'package:form_validation/src/bloc/Provider.dart';
 import 'package:form_validation/src/utils/Utils.dart' as utils;
 
-class LoginPage extends StatelessWidget {
+class RegistroPage extends StatelessWidget {
   final authProvider = new AuthProvider();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +93,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Ingreso',
+                  'Crear cuenta',
                   style: TextStyle(fontSize: 20.0),
                 ),
                 SizedBox(
@@ -111,10 +112,10 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           TextButton(
-            child: Text('Crear una nueva cuenta'),
+            child: Text('¿Ya tienes una cuenta? Login'),
             onPressed: () {
               timeDilation = 2.0;
-              Navigator.pushReplacementNamed(context, 'registro');
+              Navigator.pushReplacementNamed(context, 'login');
             },
           ),
           SizedBox(
@@ -176,26 +177,19 @@ class LoginPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
               child: Text('Ingresar'),
             ),
-            onPressed: snapshot.hasData ? () => _login(bloc, context) : null);
-        // return RaisedButton(
-        //     child: Container(
-        //       padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-        //       child: Text('Ingresar'),
-        //     ),
-        //     shape: RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.circular(5.0)),
-        //     elevation: 0.0,
-        //     color: Colors.deepPurple,
-        //     textColor: Colors.white,
-        //     onPressed: snapshot.hasData && !_logeando
-        //         ? () => _login(bloc, context)
-        //         : null);
+            // shape: RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.circular(5.0)),
+            // elevation: 0.0,
+            // color: Colors.deepPurple,
+            // textColor: Colors.white,
+            onPressed:
+                snapshot.hasData ? () => _registro(bloc, context) : null);
       },
     );
   }
 
-  _login(LoginBloc bloc, BuildContext context) async {
-    Map info = await authProvider.login(bloc.email, bloc.password);
+  _registro(LoginBloc bloc, BuildContext context) async {
+    Map info = await authProvider.registrarUsuario(bloc.email, bloc.password);
 
     if (info['ok']) {
       Navigator.pushReplacementNamed(context, 'home');

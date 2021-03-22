@@ -1,14 +1,3 @@
-// To parse this JSON data, do
-//
-//     final productModel = productModelFromJson(jsonString);
-// {
-//         "id" : 1,
-//         "title" : "asdsad",
-//         "price" : 12.0,
-//         "available" : 0,
-//         "photoUri" : "asdadsa"
-// }
-
 import 'dart:convert';
 
 ProductModel productModelFromJson(String str) =>

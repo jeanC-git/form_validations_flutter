@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:form_validation/src/Models/ProductModel.dart';
-import 'package:form_validation/src/Providers/ProductsProvider.dart';
+import 'package:form_validation/src/bloc/Provider.dart';
 import 'package:form_validation/src/utils/Utils.dart' as utils;
 import 'package:image_picker/image_picker.dart';
 
@@ -14,13 +14,14 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  final productProvider = ProductsProvider();
-  bool _guardando = false;
+  ProductosBloc productosBloc;
   ProductModel producto = ProductModel();
+  bool _guardando = false;
   PickedFile photo;
 
   @override
   Widget build(BuildContext context) {
+    productosBloc = Provider.productosBloc(context);
     final ProductModel prodData = ModalRoute.of(context).settings.arguments;
     if (prodData != null) {
       producto = prodData;
@@ -89,11 +90,11 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget _crearBoton() {
-    return RaisedButton.icon(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        color: Colors.deepPurple,
-        textColor: Colors.white,
+    return ElevatedButton.icon(
+        // shape:
+        //     RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        // color: Colors.deepPurple,
+        // textColor: Colors.white,
         label: Text('Guardar'),
         icon: Icon(Icons.save),
         onPressed: (_guardando) ? null : _submit);
@@ -110,49 +111,41 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void _submit() async {
+    String msg = '';
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
     setState(() {
       _guardando = true;
     });
-    if (producto.id == null) {
-      await productProvider.crearProducto(producto);
-    } else {
-      await productProvider.editarProducto(producto);
+
+    if (photo != null && File(photo.path) != null) {
+      producto.photoUri = await productosBloc.subirFoto(File(photo.path));
     }
 
-    mostrarSnackBar('Registro guardado');
-    Navigator.pushNamed(context, 'home');
-  }
-
-  void mostrarSnackBar(String msg) {
-    final snackBar = SnackBar(
-      content: Text(msg),
-      duration: Duration(milliseconds: 1500),
-    );
-    scaffoldKey.currentState.showSnackBar(snackBar);
+    if (producto.id == null) {
+      await productosBloc.agregarProducto(producto);
+      msg = 'Registro guardado';
+    } else {
+      await productosBloc.editarProducto(producto);
+      msg = 'Registro actualizado';
+    }
+    utils.mostrarSnackBar(context, msg);
+    // Navigator.pushNamed(context, 'home');
+    Navigator.pop(context);
   }
 
   Widget _mostrarFoto() {
-    // print();
-    // if (producto.photoUri != '') {
-    //   return Container();
-    // } else {
-    //   return Image(
-    //     image: AssetImage(photo?.path ?? 'assets/no-image.png'),
-    //     fit: BoxFit.cover,
-    //     height: 300.0,
-    //   );
-    // }
-    if (producto.photoUri != '') {
-      return Container();
+    if (producto.photoUri != null) {
+      return FadeInImage(
+        placeholder: AssetImage('assets/jar-loading.gif'),
+        image: producto.photoUri != ''
+            ? NetworkImage(producto.photoUri)
+            : AssetImage('assets/no-image.png'),
+        height: 300.0,
+        fit: BoxFit.contain,
+      );
     } else {
       if (photo != null) {
-        // return Image(
-        //   image: AssetImage(photo?.path ?? 'assets/no-image.png'),
-        //   fit: BoxFit.cover,
-        //   height: 300.0,
-        // );
         return Image.file(
           File(photo.path),
           fit: BoxFit.cover,
@@ -165,6 +158,10 @@ class _ProductPageState extends State<ProductPage> {
 
   _seleccionarFoto() async {
     _processImage(ImageSource.gallery);
+  }
+
+  _tomarFoto() {
+    _processImage(ImageSource.camera);
   }
 
   _processImage(ImageSource type) async {
@@ -181,14 +178,10 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     // Si el usuario cancelo o no selecciona una foto
+
     if (photo != null) {
-      // limpieza
-      // product.urlImg = null;
+      producto.photoUri = null;
     }
     setState(() {});
-  }
-
-  _tomarFoto() {
-    _processImage(ImageSource.camera);
   }
 }

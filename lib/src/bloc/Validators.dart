@@ -3,10 +3,10 @@ import 'dart:async';
 class Validators {
   final validarPassword = StreamTransformer<String, String>.fromHandlers(
       handleData: (password, sink) {
-    if (password.length >= 6) {
+    if (password.length >= 8) {
       sink.add(password);
     } else {
-      sink.addError('Mínimo 6 caracteres.');
+      sink.addError('Mínimo 8 caracteres.');
     }
   });
 
