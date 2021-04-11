@@ -5,14 +5,46 @@ import 'package:form_validation/src/bloc/LoginBloc.dart';
 import 'package:form_validation/src/bloc/Provider.dart';
 import 'package:form_validation/src/utils/Utils.dart' as utils;
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final authService = new AuthService();
+
+  bool cargando = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
-      children: <Widget>[_crearFondo(context), _loginForm(context)],
+      children: <Widget>[_crearFondo(context), _loginForm(context), _loading()],
     ));
+  }
+
+  Widget _loading() {
+    return cargando
+        ? Opacity(
+            opacity: 0.5,
+            child: Container(
+                decoration: new BoxDecoration(
+                    border: new Border.all(
+                        color: Colors
+                            .transparent), //color is transparent so that it does not blend with the actual color specified
+                    color: Colors.blue
+                        .shade50 // Specifies the background color and the opacity
+                    ),
+                child: Center(
+                    child: SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 10,
+                          backgroundColor: Colors.white,
+                        )))),
+          )
+        : Container();
   }
 
   Widget _crearFondo(BuildContext context) {
@@ -195,7 +227,11 @@ class LoginPage extends StatelessWidget {
   }
 
   _login(LoginBloc bloc, BuildContext context) async {
+    setState(() {
+    });
+      this.cargando = true;
     Map info = await authService.login(bloc.email, bloc.password);
+    this.cargando = false;
 
     if (info['ok']) {
       // utils.mostrarAlerta(context, info['response']['email']);
