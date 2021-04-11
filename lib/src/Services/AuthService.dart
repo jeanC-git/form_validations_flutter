@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import 'package:form_validation/src/utils/RoutesProviders.dart' as routes;
 
-class AuthProvider {
+class AuthService {
   String _url = routes.authUrl;
 
   final _prefs = new PreferenciasUsuario();
@@ -19,7 +19,7 @@ class AuthProvider {
     final Map<String, dynamic> data = json.decode(resp.body);
     _prefs.usToken = data['token'];
 
-    return {'ok': true, 'token': data['token']};
+    return {'ok': true, 'token': data['token'], 'response': data['user']};
   }
 
   Future<Map<String, dynamic>> registrarUsuario(

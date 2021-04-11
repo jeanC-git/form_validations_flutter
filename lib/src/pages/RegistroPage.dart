@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:form_validation/src/Providers/AuthProvider.dart';
+import 'package:form_validation/src/Services/AuthService.dart';
 import 'package:form_validation/src/bloc/LoginBloc.dart';
 import 'package:form_validation/src/bloc/Provider.dart';
 import 'package:form_validation/src/utils/Utils.dart' as utils;
 
 class RegistroPage extends StatelessWidget {
-  final authProvider = new AuthProvider();
+  final authService = new AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +175,7 @@ class RegistroPage extends StatelessWidget {
         return ElevatedButton(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-              child: Text('Ingresar'),
+              child: Text('Registrarme'),
             ),
             // shape: RoundedRectangleBorder(
             //     borderRadius: BorderRadius.circular(5.0)),
@@ -189,7 +189,7 @@ class RegistroPage extends StatelessWidget {
   }
 
   _registro(LoginBloc bloc, BuildContext context) async {
-    Map info = await authProvider.registrarUsuario(bloc.email, bloc.password);
+    Map info = await authService.registrarUsuario(bloc.email, bloc.password);
 
     if (info['ok']) {
       Navigator.pushReplacementNamed(context, 'home');

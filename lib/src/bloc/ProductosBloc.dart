@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:form_validation/src/Models/ProductModel.dart';
-import 'package:form_validation/src/Providers/ProductsProvider.dart';
+import 'package:form_validation/src/Services/ProductsService.dart';
 
 class ProductosBloc {
   final _productosController = new BehaviorSubject<List<ProductModel>>();
   final _cargandoController = new BehaviorSubject<bool>();
 
-  final _productosProvider = new ProductsProvider();
+  final _productosProvider = new ProductsService();
 
   Stream<List<ProductModel>> get productosStream => _productosController.stream;
   Stream<bool> get cargando => _cargandoController.stream;

@@ -8,7 +8,7 @@ import 'package:form_validation/src/Models/ProductModel.dart';
 import 'package:form_validation/src/utils/RoutesProviders.dart' as routes;
 import 'package:form_validation/src/preferencias_usuario/PreferenciasUsuario.dart';
 
-class ProductsProvider {
+class ProductsService {
   final String _url = '${routes.apiUrl}/productos';
   final _prefs = new PreferenciasUsuario();
 
@@ -16,6 +16,7 @@ class ProductsProvider {
     final url = '$_url/index';
     final resp = await http.get(url, headers: _setHeaders());
     final decodedData = json.decode(resp.body);
+    // print(decodedData['productos']);
     final List<ProductModel> productos = [];
     decodedData['productos'].forEach((value) {
       final prodTemp = ProductModel.fromJson(value);

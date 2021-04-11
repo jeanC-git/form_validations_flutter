@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:form_validation/src/Providers/AuthProvider.dart';
+import 'package:form_validation/src/Services/AuthService.dart';
 import 'package:form_validation/src/bloc/LoginBloc.dart';
 import 'package:form_validation/src/bloc/Provider.dart';
 import 'package:form_validation/src/utils/Utils.dart' as utils;
 
 class LoginPage extends StatelessWidget {
-  final authProvider = new AuthProvider();
+  final authService = new AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -195,10 +195,12 @@ class LoginPage extends StatelessWidget {
   }
 
   _login(LoginBloc bloc, BuildContext context) async {
-    Map info = await authProvider.login(bloc.email, bloc.password);
+    Map info = await authService.login(bloc.email, bloc.password);
 
     if (info['ok']) {
-      Navigator.pushReplacementNamed(context, 'home');
+      utils.mostrarAlerta(context, info['response']['email']);
+
+      // Navigator.pushReplacementNamed(context, 'home');
     } else {
       utils.mostrarAlerta(context, 'Texto error');
     }

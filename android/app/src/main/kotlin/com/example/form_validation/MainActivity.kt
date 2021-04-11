@@ -1,4 +1,4 @@
-package com.example.form_validation
+package com.heroku.jc_backend_flutter
 
 import io.flutter.embedding.android.FlutterActivity
 
