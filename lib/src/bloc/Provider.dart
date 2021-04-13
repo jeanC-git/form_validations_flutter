@@ -7,7 +7,7 @@ import 'package:form_validation/src/bloc/ProductosBloc.dart';
 export 'package:form_validation/src/bloc/ProductosBloc.dart';
 
 class Provider extends InheritedWidget {
-  final loginBloc = LoginBloc();
+  final _loginBloc = LoginBloc();
   final _productosBloc = ProductosBloc();
 
   static Provider _instacia;
@@ -29,7 +29,7 @@ class Provider extends InheritedWidget {
   bool updateShouldNotify(InheritedWidget oldWidget) => true;
 
   static LoginBloc of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<Provider>().loginBloc;
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._loginBloc;
   }
 
   static ProductosBloc productosBloc(BuildContext context) {

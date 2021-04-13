@@ -5,6 +5,7 @@ import 'package:form_validation/src/pages/LoginPage.dart';
 import 'package:form_validation/src/pages/ProductPage.dart';
 import 'package:form_validation/src/pages/RegistroPage.dart';
 import 'package:form_validation/src/preferencias_usuario/PreferenciasUsuario.dart';
+import 'package:form_validation/src/widgets/Loading.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,9 +17,9 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final prefs = new PreferenciasUsuario();
-    print('Token Usuario');
-    print(prefs.usToken);
+    // final prefs = new PreferenciasUsuario();
+    // print('Token Usuario');
+    // print(prefs.usToken);
     return Provider(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
           'registro': (BuildContext context) => RegistroPage(),
           'home': (BuildContext context) => HomePage(),
           'producto': (BuildContext context) => ProductPage(),
+          'loading': (BuildContext context) => Loading(),
         },
         theme: ThemeData(primaryColor: Colors.deepPurple),
       ),

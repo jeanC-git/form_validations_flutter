@@ -123,14 +123,13 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     if (producto.id == null) {
-      await productosBloc.agregarProducto(producto);
+      productosBloc.agregarProducto(producto);
       msg = 'Registro guardado';
     } else {
-      await productosBloc.editarProducto(producto);
+      productosBloc.editarProducto(producto);
       msg = 'Registro actualizado';
     }
     utils.mostrarSnackBar(context, msg);
-    // Navigator.pushNamed(context, 'home');
     Navigator.pop(context);
   }
 

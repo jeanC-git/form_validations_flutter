@@ -4,6 +4,7 @@ import 'package:form_validation/src/Services/AuthService.dart';
 import 'package:form_validation/src/bloc/LoginBloc.dart';
 import 'package:form_validation/src/bloc/Provider.dart';
 import 'package:form_validation/src/utils/Utils.dart' as utils;
+import 'package:form_validation/src/widgets/Loading.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,39 +14,51 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final authService = new AuthService();
 
-  bool cargando = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
-      children: <Widget>[_crearFondo(context), _loginForm(context), _loading()],
+      children: <Widget>[
+        _crearFondo(context),
+        _loginForm(context),
+        // _loading(context)
+        Loading()
+      ],
     ));
   }
 
-  Widget _loading() {
-    return cargando
-        ? Opacity(
-            opacity: 0.5,
-            child: Container(
-                decoration: new BoxDecoration(
-                    border: new Border.all(
-                        color: Colors
-                            .transparent), //color is transparent so that it does not blend with the actual color specified
-                    color: Colors.blue
-                        .shade50 // Specifies the background color and the opacity
-                    ),
-                child: Center(
-                    child: SizedBox(
-                        width: 100,
-                        height: 100,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 10,
-                          backgroundColor: Colors.white,
-                        )))),
-          )
-        : Container();
-  }
+  // Widget _loading(BuildContext context) {
+  //   final bloc = Provider.of(context);
+
+  //   return StreamBuilder(
+  //     stream: bloc.cargando,
+  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+  //       return Visibility(
+  //         visible: (snapshot.hasData && snapshot.data),
+  //         child: Stack(children: <Widget>[
+  //           Container(
+  //             width: double.infinity,
+  //             decoration: new BoxDecoration(
+  //               border: new Border.all(color: Colors.transparent),
+  //               color: Colors.white.withOpacity(
+  //                   0.4), // Specifies the background color and the opacity
+  //             ),
+  //           ),
+  //           Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             children: [
+  //               Center(
+  //                 child: Image(
+  //                   image: AssetImage('assets/loader.gif'),
+  //                 ),
+  //               )
+  //             ],
+  //           )
+  //         ]),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _crearFondo(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -96,7 +109,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _loginForm(BuildContext context) {
+  Widget _loginForm(
+    BuildContext context,
+  ) {
     final bloc = Provider.of(context);
     final size = MediaQuery.of(context).size;
 
@@ -209,32 +224,19 @@ class _LoginPageState extends State<LoginPage> {
               child: Text('Ingresar'),
             ),
             onPressed: snapshot.hasData ? () => _login(bloc, context) : null);
-        // return RaisedButton(
-        //     child: Container(
-        //       padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-        //       child: Text('Ingresar'),
-        //     ),
-        //     shape: RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.circular(5.0)),
-        //     elevation: 0.0,
-        //     color: Colors.deepPurple,
-        //     textColor: Colors.white,
-        //     onPressed: snapshot.hasData && !_logeando
-        //         ? () => _login(bloc, context)
-        //         : null);
+        // onPressed: () {
+        //   if (snapshot.hasData) {
+        //     return _login(bloc, context);
+        //   }
+        //   return null;
+        // });
       },
     );
   }
 
   _login(LoginBloc bloc, BuildContext context) async {
-    setState(() {
-    });
-      this.cargando = true;
-    Map info = await authService.login(bloc.email, bloc.password);
-    this.cargando = false;
-
-    if (info['ok']) {
-      // utils.mostrarAlerta(context, info['response']['email']);
+    bool info = await bloc.login(bloc.email, bloc.password);
+    if (info) {
       Navigator.pushReplacementNamed(context, 'home');
     } else {
       utils.mostrarAlerta(context, 'Texto error');
